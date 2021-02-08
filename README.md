@@ -1,0 +1,2 @@
+# othellolago
+Othello online game
