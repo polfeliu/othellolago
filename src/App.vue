@@ -141,7 +141,7 @@
             },
 
             passTurn: function(x,y){
-              this.myTurn = false
+                this.myTurn = false
                 this.send('passTurn')
                 this.passedTurn = true;
             },
@@ -163,6 +163,13 @@
                 this.passedTurn = false;
             },
 
+            resetUI: function(){
+                this.connection = null
+                this.connected = false
+                this.peerId = ""
+                this.$refs.board.resetBoard()
+            },
+
 
             setListeners: function (conn) {
                 conn.on('data', (data) => {
@@ -179,11 +186,8 @@
                 conn.on('close', () => {
                     if (this.connection.peer == conn.peer) {
                         //Connection with current user was closed
-                        this.connection = null
-                        this.connected = false
-                        this.peerId = ""
+                        this.resetUI()
                     }
-                    console.log("close connection")
                 });
 
                 conn.on('error', (err) => {
@@ -241,6 +245,7 @@
                 setTimeout(function () {
                     if (this.connecting) {
                         this.peernotfound = true
+                        this.connecting = false
                     }
                 }.bind(this), 1500)
 
@@ -248,6 +253,7 @@
 
             disconnect: function () {
                 this.connection.close();
+                this.resetUI()
             }
 
 
@@ -264,11 +270,12 @@
 
             this.$peer.on('close', () => {
                 console.log('close peer');
-
+                this.resetUI()
             });
 
             this.$peer.on('disconnected', () => {
                 console.log('dis');
+                this.resetUI();
             });
         },
     }

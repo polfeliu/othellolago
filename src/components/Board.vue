@@ -22,14 +22,18 @@
 
             <v-col>
 
-
                 <h2>
                         <span v-if="myColorWhite">
+                            You are:
                             Whites
                         </span>
                     <span v-else class="white--text">
+                        You are:
                             Blacks
                         </span>
+                    <span v-if="active">
+                         Your Turn!
+                    </span>
                 </h2>
             </v-col>
         </v-row>
@@ -87,8 +91,10 @@
         data: function () {
             return {
                 cells: [],
-                whiteCells: 2,
-                blackCells: 2,
+                whiteCells: 0,
+                blackCells: 0,
+                lost: true,
+                won: false,
             }
         },
 
@@ -250,28 +256,34 @@
                 } else {
                     this.setCell(x, y, true, !this.myColorWhite)
                     this.FlipCells(result, !this.myColorWhite)
-                    if(!this.CheckPossibleMoves()){
-                        this.$emit('passTurn');
-                    }
+
+                    setTimeout(function () {
+                        //Check if I can move and if not pass turn
+                        if(!this.CheckPossibleMoves()){
+                            this.$emit('passTurn');
+                        }
+                    }.bind(this), 200 * (result.length + 1))
+
                 }
 
             },
 
             resetBoard: function () {
-
                 this.cells.forEach(function (row, i) {
                     row.forEach(function (cell, j) {
                         if (cell.x == 3 && cell.y == 3) {
-                            cell.show = true, cell.sideWhite = true
+                            this.setCell(cell.x, cell.y, true, true)
                         } else if (cell.x == 4 && cell.y == 3) {
-                            cell.show = true, cell.sideWhite = false
+                            this.setCell (cell.x, cell.y, true, false)
                         } else if (cell.x == 4 && cell.y == 4) {
-                            cell.show = true, cell.sideWhite = true
+                            this.setCell (cell.x, cell.y, true, true)
                         } else if (cell.x == 3 && cell.y == 4) {
-                            cell.show = true, cell.sideWhite = false
+                            this.setCell (cell.x, cell.y, true, false)
+                        }else{
+                            this.setCell (cell.x, cell.y, false, true)
                         }
-                    });
-                });
+                    }.bind(this));
+                }.bind(this));
             }
 
         },
@@ -293,8 +305,11 @@
                 }
             }
 
-            this.resetBoard()
         },
+
+        mounted: function () {
+            this.resetBoard()
+        }
     }
 </script>
 
