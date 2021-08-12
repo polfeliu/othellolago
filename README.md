@@ -1,5 +1,8 @@
 # othellolago
 
+Public Deployment:
+https://polfeliu.github.io/othellolago/
+
 ## Project setup
 ```
 npm install
